@@ -6,7 +6,6 @@
   <body>
     <p v-if="test"> {{ test }}</p>
   </body>
- 
 </template>
 
 <script>
