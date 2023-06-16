@@ -2,9 +2,9 @@
   <center>
   <div id="main">
     <h1>Geuss The Country</h1>
-    <h1>{{ Country[100].flag }}</h1>
-    <form method="post" action="App.vue">
-      <input type="text" name="Geuss" placeholder="Enter Country Name.."><br>
+    <img v-if="Country.length > 0" :src="getCountryFlag('Eritrea')" alt="Country Flag" style="height: 50%; width: 50%;">
+    <form @submit="PostData" method="post">
+      <input type="text" name="Guess" placeholder="Enter Country Name.." id="Guess"><br>
       <button type="submit" name="submit">Enter</button>
     </form>
   </div>
@@ -14,8 +14,12 @@
 <script>
 import axios from 'axios'
 import { ref } from 'vue'
-
+let Guess = document.getElementById("Guess")
   export default{
+    data(){
+      
+    },
+
     setup(){
       const Country = ref([])
 
@@ -26,10 +30,18 @@ import { ref } from 'vue'
       .catch( error =>{
         console.log(error)
       })
+
+      function getCountryFlag() {
+        const country = Country.value.find(c => c?.name?.common === countryName);
+        return country?.flags?.svg || '';
+        
+      }
+
       return{
-          Country
-      };
-    },
+        Country,        
+        getCountryFlag
+      }
+    }
   }
 </script>
 
