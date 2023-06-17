@@ -1,37 +1,46 @@
 <template>
   <center>
-  <div id="main">
-    <h1>Geuss The Country</h1>
-    <h1>{{ Country[100].flag }}</h1>
-    <form method="post" action="App.vue">
-      <input type="text" name="Geuss" placeholder="Enter Country Name.."><br>
-      <button type="submit" name="submit">Enter</button>
-    </form>
-  </div>
+    <div id="main">
+      <h1>Geuss The Country</h1>
+      <img v-if="flagURL" :src="flagURL" :alt="countryName" style="height: 50%; width: 50%;">
+      <form @submit.prevent="submitForm">
+        <input type="text" placeholder="Enter Country Name.." v-model="countryName"><br>
+        <button type="submit" >Enter</button>
+      </form>
+    </div>
   </center>
 </template>
-  
-<script>
-import axios from 'axios'
-import { ref } from 'vue'
 
+<script>
+  import axios from 'axios'
+  import { ref } from 'vue'
   export default{
     setup(){
-      const Country = ref([])
+      const countryName = ref('')
+      const flagURL = ref('')
 
-      axios.get("https://restcountries.com/v3.1/all")
-      .then(Response => {
-        Country.value = Response.data
-      })
-      .catch( error =>{
-        console.log(error)
-      })
+      const submitForm = () => {
+        axios.get(`https://restcountries.com/v2/name/${countryName.value}`).then(response => {
+          const country = response.data[0];
+          if(country){
+            flagURL.value = country.flags.png || '';
+          } else {
+            flagURL.value = '';
+          }
+        })
+        .catch( error =>{
+          console.log(error)
+          flagURL.value = '';
+        })
+      }
       return{
-          Country
-      };
-    },
+        submitForm, flagURL, countryName
+      }
+    }
   }
 </script>
+
+
 
 <style>
   :root{
